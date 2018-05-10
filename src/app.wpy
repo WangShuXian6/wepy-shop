@@ -1,0 +1,44 @@
+<style lang="less">
+  .container {
+
+  }
+</style>
+
+<script>
+  import wepy from 'wepy'
+  import 'wepy-async-function'
+
+  import {setStore} from 'wepy-redux'
+  import configStore from './store'
+
+  const store = configStore()
+  setStore(store)
+
+  export default class extends wepy.app {
+    config = {
+      pages: [
+        'pages/index'
+      ],
+      window: {
+        backgroundTextStyle: 'light',
+        navigationBarBackgroundColor: '#fff',
+        navigationBarTitleText: 'WeChat',
+        navigationBarTextStyle: 'black'
+      }
+    }
+
+    globalData = {
+      userInfo: null
+    }
+
+    constructor() {
+      super()
+      this.use('requestfix')
+      this.use('promisify')
+    }
+
+    onLaunch() {
+
+    }
+  }
+</script>

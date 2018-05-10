@@ -1,0 +1,93 @@
+<style lang="less">
+  .container {
+    width: 100%;
+    height: 100%;
+    .in {
+      width: 100%;
+    }
+  }
+</style>
+<template>
+  <view class="container">
+    <repeat for="{{order}}" key="index" item="item">
+      <view class="in">
+        <cartControl class="cartControl"
+                     :pid.sync="item.pid"
+                     :count.sync="item.count"
+                     :canRemove.sync="item.canRemove"/>
+      </view>
+    </repeat>
+    <cart/>
+  </view>
+</template>
+
+<script>
+  import wepy from 'wepy'
+  import {connect} from 'wepy-redux'
+  import CartControl from '../components/cartControl'
+  import Cart from '../components/cart'
+  import {goodsList} from '../api/goodsList'
+  import {asyncRequestProducts} from '../store/actions/products'
+  //import {REQUEST_PRODUCTS} from '../store/types/index'
+
+  @connect({
+    order(state) {
+      return state.products
+    }
+  }, {
+    asyncRequestProducts
+  })
+
+  export default class Index extends wepy.page {
+    config = {
+      navigationBarTitleText: 'test'
+    }
+    components = {
+      cartControl: CartControl,
+      cart: Cart
+    }
+
+    mixins = []
+
+    data = {
+      list: [{pid: 1, count: 2, canRemove: false}, {pid: 2, count: 3, canRemove: false}]
+    }
+
+    computed = {}
+
+    methods = {}
+
+    events = {}
+
+    onLoad() {
+      //this.asyncGetList()
+      setTimeout(() => {
+        this.methods.asyncRequestProducts(this.list)
+      }, 5000)
+      //console.log(this.order)
+    }
+
+    requestList() {
+      let url = `${goodsList}/234`
+      console.log(url)
+      return new Promise((resolve, reject) => {
+        wepy.request({
+          url: url,
+          method: 'GET',
+          header: {
+            'Content-Type': 'Application/json;charset=UTF-8'
+          }
+        }).then((response) => {
+          resolve(response.data)
+        }).catch((error) => {
+          //  todo
+          console.log(error)
+        })
+      })
+    }
+
+    async asyncGetList() {
+      let list = await this.requestList()
+    }
+  }
+</script>
